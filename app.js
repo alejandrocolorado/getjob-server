@@ -11,6 +11,7 @@ const MongoStore = require("connect-mongo")(session);
 const cors = require("cors");
 
 const auth = require("./routes/auth/auth");
+const jobRouter = require('./routes/private/job.js')
 
 // MONGOOSE CONNECTION
 mongoose
@@ -67,6 +68,10 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // ROUTER MIDDLEWARE
 app.use("/auth", auth);
+
+//app.use('/user', userRouter);
+app.use('/job', jobRouter);
+//app.use('portfolio', portfolioRouter);
 
 // ERROR HANDLING
 // catch 404 and forward to error handler
