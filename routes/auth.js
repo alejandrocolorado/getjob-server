@@ -9,7 +9,7 @@ const User = require("../models/user");
 const {
   isLoggedIn,
   isNotLoggedIn,
-  validationLoggin,
+  validationLogIn,
 } = require("../helpers/middlewares");
 
 //  POST '/signup'
@@ -19,7 +19,7 @@ router.post(
   // revisamos si el user no está ya logueado usando la función helper (chequeamos si existe req.session.currentUser)
   isNotLoggedIn(),
   // revisa que se hayan completado los valores de username y password usando la función helper
-  validationLoggin(),
+  validationLogIn(),
   async (req, res, next) => {
     const { username, password } = req.body;
 
@@ -52,7 +52,7 @@ router.post(
 router.post(
   "/login",
   isNotLoggedIn(),
-  validationLoggin(),
+  validationLogIn(),
   async (req, res, next) => {
     const { username, password } = req.body;
     try {
