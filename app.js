@@ -9,6 +9,7 @@ const mongoose = require("mongoose");
 const session = require("express-session");
 const MongoStore = require("connect-mongo")(session);
 const cors = require("cors");
+const axios = require ('axios');
 
 const auth = require("./routes/auth/auth");
 const jobRouter = require('./routes/private/job.js')

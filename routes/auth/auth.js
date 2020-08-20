@@ -3,6 +3,7 @@ const router = express.Router();
 const createError = require("http-errors");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
+const axios = require ('axios')
 const User = require("../../models/user");
 
 // HELPER FUNCTIONS
@@ -97,6 +98,13 @@ router.get("/private", isLoggedIn(), (req, res, next) => {
   res
     .status(200) // OK
     .json({ message: "Test - User is logged in" });
+});
+
+//Prueba acceso a datos RestAPI
+router.get ('/test', async (req, res, next) => {
+  const response = await axios.get('https://remotive.io/api/remote-jobs?category=software-dev')
+
+  res.json(response.data)
 });
 
 // GET '/me'

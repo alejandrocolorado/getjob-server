@@ -3,9 +3,9 @@ const Schema = mongoose.Schema;
 
 const userSchema = new Schema(
   {
-    firstName: { type: String, required: true },
-    lastName: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
+    username: { type: String, required: true },
+   password: { type: String, required: true },
+   /* email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     city: { type: String, required: true },
     country: { type: String, required: true },
@@ -16,7 +16,7 @@ const userSchema = new Schema(
       default: "https://www.esandai.com/upload/users/user-avatar.png",
     },
     jobs: [{ type: mongoose.Schema.Types.ObjectId, ref: "Job" }],
-    portfolio: [{ type: mongoose.Schema.Types.ObjectId, ref: "Portfolio" }],
+    portfolio: [{ type: mongoose.Schema.Types.ObjectId, ref: "Portfolio" }], */
   },
   {
     timestamps: {
