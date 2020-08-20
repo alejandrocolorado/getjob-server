@@ -10,7 +10,7 @@ const session = require("express-session");
 const MongoStore = require("connect-mongo")(session);
 const cors = require("cors");
 
-const auth = require("./routes/auth");
+const auth = require("./routes/auth/auth");
 
 // MONGOOSE CONNECTION
 mongoose
@@ -21,6 +21,8 @@ mongoose
   })
   .then(() => console.log(`Connected to database`))
   .catch((err) => console.error(err));
+
+
 
 // EXPRESS SERVER INSTANCE
 const app = express();
