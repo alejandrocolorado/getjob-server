@@ -5,7 +5,7 @@ const portfolioSchema = new Schema({
     userId: {type: mongoose.Schema.Types.ObjectId, ref: "User"},
     technologies: [{ 
     name: { type: String},
-    url: { type: String }
+    url: [{ type: String }]
   }],
 }, {
   timestamps: {
