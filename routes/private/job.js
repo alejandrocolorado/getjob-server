@@ -43,7 +43,7 @@ router.post("/project-detail", async (req, res, next) => {
 
 router.post("/project-detail/technology", async (req, res, next) => {
   const newLink = req.body.inputLink
-  const portfolioId = req.session.currentUser.userPortfolio._id
+  const portfolioId = req.session.currentUser.portfolio._id
   const {
     title,
     company_name,
@@ -66,7 +66,9 @@ router.post("/project-detail/technology", async (req, res, next) => {
       publication_date,
       url,
       tags,
-      technologies: tags.map((str) => ({ name: str, url: "" })), 
+      technologies: tags.map((str) => {
+        
+      }), 
       candidate_required_location,
       isApplication: false,
       category,
