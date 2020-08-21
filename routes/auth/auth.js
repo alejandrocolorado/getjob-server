@@ -4,6 +4,7 @@ const createError = require("http-errors");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
 const User = require("../../models/user");
+const Portfolio = require("../../models/portfolio");
 
 // HELPER FUNCTIONS
 const {
@@ -56,7 +57,17 @@ router.post(
         // luego asignamos el nuevo documento user a req.session.currentUser y luego enviamos la respuesta en json
         req.session.currentUser = newUser;
         res
-          .status(200) //  OK
+          .status(200) 
+          .json(newUser);
+        const userPortfolio = await Portfolio.create({
+          technologies: [{ 
+            name: "",
+            url: []
+          }],
+        })
+        req.session.currentUser = {newUser, userPortfolio};
+        res
+          .status(200) 
           .json(newUser);
       }
     } catch (error) {
