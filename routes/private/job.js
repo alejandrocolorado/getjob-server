@@ -4,6 +4,7 @@ const router = express.Router();
 
 const Job = require("./../../models/job");
 const Portfolio = require("./../../models/portfolio");
+const User = require("../../models/user");
 
 //POST route => to save the job
 //Validar si la Array
@@ -47,7 +48,7 @@ router.post("/project-detail/technology", async (req, res, next) => {
 
   const portfolioId = req.session.currentUser.portfolio._id;
   const portfolio = req.session.currentUser.portfolio;
-  console.log(portfolio);
+  console.log("let me see", portfolio);
   const {
     title,
     company_name,
@@ -65,6 +66,21 @@ router.post("/project-detail/technology", async (req, res, next) => {
   }
   //Array de las tecnlogias que hay en el portfolio y añadiendo la nueva, proveniente de solicitud.
   const updatedTechnologies = [...portfolio.technologies, technology];
+
+/*   let technologyExists = false
+
+  portfolio.technologies.forEach(tech => {
+
+   if (tech.name === technology.name) {
+     tech.url.push(technology.url) 
+     technologyExists=true;
+   } 
+ });
+  if (!technologyExists) {
+    const newTechnology= {t}
+    portfolio.technologies.push(t)
+  } */
+
   //filtras las tencologias que hay en el portfolio y que coincidan con tags
   const currentTechnologies = updatedTechnologies.filter((tech) => {
     //aqui compar alas technologies con tags.
@@ -73,6 +89,7 @@ router.post("/project-detail/technology", async (req, res, next) => {
 
   // array de solo nombres de tags del portfolio y de la que añades en la pagina, que ya tengo
   const currentTags = currentTechnologies.map((tech) => tech.name);
+  
 
   //
   const missingTechnologies = tags.map((tag) => {
@@ -80,10 +97,12 @@ router.post("/project-detail/technology", async (req, res, next) => {
     if (!currentTags.includes(tag)) {
       return { name: tag, url: "" };
     }
-  });
+  }).filter(el=>el);
+
+  console.log({updatedTechnologies, currentTechnologies, missingTechnologies });
 
   try {
-    await Job.create({
+    const newJob = await Job.create({
       userId,
       title,
       company_name,
@@ -99,12 +118,18 @@ router.post("/project-detail/technology", async (req, res, next) => {
     const updatedPortfolio = await Portfolio.findByIdAndUpdate(
       portfolioId,
       {
-        technologies: updatedTechnologies
+        technologies: updatedTechnologies,
       },
       { new: true }
     );
-    //Siempre despues de actualizar portfolio
-    req.session.currentUser.portfolio = updatedPortfolio;
+    //Siempre despues de actualizar portfolio, tambien actualizar el user con el job.
+    
+    const updatedUser = await User.findByIdAndUpdate(userId,  {$push: {jobs:newJob._id}})
+    
+    updatedUser.portfolio = updatedPortfolio;
+    req.session.currentUser = updatedUser;
+
+    res.json(newJob);
     
   } catch (err) {
     console.log(err);
