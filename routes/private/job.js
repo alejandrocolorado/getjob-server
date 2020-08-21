@@ -9,7 +9,7 @@ const Portfolio = require("./../../models/portfolio");
 //Validar si la Array
 router.post("/project-detail", async (req, res, next) => {
   try {
-    //const userId = req.sesion.currentUser._id;
+    const userId = req.session.currentUser._id;
 
     const {
       title,
@@ -21,15 +21,16 @@ router.post("/project-detail", async (req, res, next) => {
       category,
       candidate_required_location,
     } = req.body;
+    console.log(tags);
 
     const savedJob = await Job.create({
-      //userId,
+      userId,
       title,
       company_name,
       publication_date,
       url,
       tags,
-      technologies: tags.map((str) => ({ name: str, url: "" })), 
+      technologies: tags.map((str) => ({ name: str, url: "" })),
       candidate_required_location,
       isApplication: false,
       category,
@@ -42,78 +43,109 @@ router.post("/project-detail", async (req, res, next) => {
 });
 
 router.post("/project-detail/technology", async (req, res, next) => {
-  const newLink = req.body.inputLink
-  const portfolioId = req.session.currentUser.userPortfolio._id
+  const userId = req.session.currentUser._id;
+
+  const portfolioId = req.session.currentUser.portfolio._id;
+  const portfolio = req.session.currentUser.portfolio;
+  console.log(portfolio);
   const {
     title,
     company_name,
     publication_date,
     url,
     tags,
-    technologies,
+    //debe ser un objeto, para enviar desde el frontend.
+    technology,
     category,
     candidate_required_location,
   } = req.body;
 
-  if (req.body.githubUrl === "") {
+  if (technology.url === "") {
     res.status(400).json({ message: "Github link needed" });
-  } 
+  }
+  //Array de las tecnlogias que hay en el portfolio y añadiendo la nueva, proveniente de solicitud.
+  const updatedTechnologies = [...portfolio.technologies, technology];
+  //filtras las tencologias que hay en el portfolio y que coincidan con tags
+  const currentTechnologies = updatedTechnologies.filter((tech) => {
+    //aqui compar alas technologies con tags.
+    return tags.includes(tech.name);
+  });
+
+  // array de solo nombres de tags del portfolio y de la que añades en la pagina, que ya tengo
+  const currentTags = currentTechnologies.map((tech) => tech.name);
+
+  //
+  const missingTechnologies = tags.map((tag) => {
+    //{ name: str, url: "" }
+    if (!currentTags.includes(tag)) {
+      return { name: tag, url: "" };
+    }
+  });
 
   try {
     await Job.create({
+      userId,
       title,
       company_name,
       publication_date,
       url,
       tags,
-      technologies: tags.map((str) => ({ name: str, url: "" })), 
+      technologies: [...currentTechnologies, ...missingTechnologies],
       candidate_required_location,
       isApplication: false,
       category,
-    })
+    });
 
+    const updatedPortfolio = await Portfolio.findByIdAndUpdate(
+      portfolioId,
+      {
+        technologies: updatedTechnologies
+      },
+      { new: true }
+    );
+    //Siempre despues de actualizar portfolio
+    req.session.currentUser.portfolio = updatedPortfolio;
     
-    await Portfolio.findByIdAndUpdate({portfolioId}, {
-      technologies: {
-        ...technologies,
-        url: url.push(newLink)
-      }
-    })
-
-    }
-   catch (err) {
-    console.log(err)
+  } catch (err) {
+    console.log(err);
   }
 });
 
+//Aqui hay que implementar la misma logica de filter y map, anterior.
+
 router.post("/project-detail/:id/technology", async (req, res, next) => {
-  const newLink = req.body.inputLink
-  const jobId = req.params.id
-  const portfolioId = req.session.currentUser.userPortfolio._id
+  const newLink = req.body.inputLink;
+  const jobId = req.params.id;
+  const portfolioId = req.session.currentUser.userPortfolio._id;
 
   if (req.body.githubUrl === "") {
     res.status(400).send({ message: "Github link needed" });
-  } 
+  }
 
   try {
-     await Job.findByIdAndUpdate({jobId}, {
+    await Job.findByIdAndUpdate(
+      { jobId },
+      {
         technologies: {
           ...technologies,
-          url: newLink
-        }
-    })
-    res.status(200).send({ message: "Ok" })
-
-    await Portfolio.findByIdAndUpdate({portfolioId}, {
-      technologies: {
-        ...technologies,
-        url: url.push(newLink)
+          url: newLink,
+        },
       }
-    })
-    res.status(200).send({ message: "Ok" })
+    );
+    res.status(200).send({ message: "Ok" });
 
+    await Portfolio.findByIdAndUpdate(
+      { portfolioId },
+      {
+        technologies: {
+          ...technologies,
+          url: url.push(newLink),
+        },
+      }
+    );
+    res.status(200).send({ message: "Ok" });
   } catch (err) {
-    console.log(err)
+    console.log(err);
   }
 });
 
