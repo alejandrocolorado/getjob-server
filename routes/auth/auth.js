@@ -18,21 +18,41 @@ router.post(
   "/signup",
   // revisamos si el user no está ya logueado usando la función helper (chequeamos si existe req.session.currentUser)
   isNotLoggedIn(),
-  // revisa que se hayan completado los valores de username y password usando la función helper
+  // revisa que se hayan completado los valores de email y password usando la función helper
   validationLogIn(),
   async (req, res, next) => {
-    const { username, password } = req.body;
+    const {
+      firstname,
+      lastname,
+      email,
+      password,
+      city,
+      country,
+      phone,
+      linkedin,
+      image,
+    } = req.body;
 
     try {
-      // chequea si el username ya existe en la BD
-      const usernameExists = await User.findOne({ username }, "username");
+      // chequea si el email ya existe en la BD
+      const emailExists = await User.findOne({ email }, "email");
       // si el usuario ya existe, pasa el error a middleware error usando next()
-      if (usernameExists) return next(createError(400));
+      if (emailExists) return next(createError(400));
       else {
         // en caso contratio, si el usuario no existe, hace hash del password y crea un nuevo usuario en la BD
         const salt = bcrypt.genSaltSync(saltRounds);
         const hashPass = bcrypt.hashSync(password, salt);
-        const newUser = await User.create({ username, password: hashPass });
+        const newUser = await User.create({
+          firstname,
+          lastname,
+          email,
+          password: hashPass,
+          city,
+          country,
+          phone,
+          linkedin,
+          image,
+        });
         // luego asignamos el nuevo documento user a req.session.currentUser y luego enviamos la respuesta en json
         req.session.currentUser = newUser;
         res
@@ -48,16 +68,16 @@ router.post(
 //  POST '/login'
 
 // chequea que el usuario no esté logueado usando la función helper (chequea si existe req.session.currentUser)
-// revisa que el username y el password se estén enviando usando la función helper
+// revisa que el email y el password se estén enviando usando la función helper
 router.post(
   "/login",
   isNotLoggedIn(),
   validationLogIn(),
   async (req, res, next) => {
-    const { username, password } = req.body;
+    const { email, password } = req.body;
     try {
       // revisa si el usuario existe en la BD
-      const user = await User.findOne({ username });
+      const user = await User.findOne({ email });
       // si el usuario no existe, pasa el error al middleware error usando next()
       if (!user) {
         next(createError(404));
@@ -98,8 +118,6 @@ router.get("/private", isLoggedIn(), (req, res, next) => {
     .status(200) // OK
     .json({ message: "Test - User is logged in" });
 });
-
-
 
 // GET '/me'
 
