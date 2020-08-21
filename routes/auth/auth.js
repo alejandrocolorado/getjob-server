@@ -46,10 +46,7 @@ router.post(
 
         const userPortfolio = await Portfolio.create({
           technologies: [
-            {
-              name: "",
-              url: [],
-            },
+    ///
           ],
         });
 
@@ -100,6 +97,9 @@ router.post(
       // si el usuario existe, hace hash del password y lo compara con el de la BD
       // loguea al usuario asignando el document a req.session.currentUser, y devuelve un json con el user
       else if (bcrypt.compareSync(password, user.password)) {
+      
+      
+
         req.session.currentUser = user;
         res.status(200).json(user);
         return;

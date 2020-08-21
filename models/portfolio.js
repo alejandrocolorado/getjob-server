@@ -6,7 +6,7 @@ const portfolioSchema = new Schema(
     technologies: [
       {
         name: { type: String },
-        url: [{ type: String }],
+        url: { type: String },
       },
     ],
   },
