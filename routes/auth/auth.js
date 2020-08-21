@@ -8,7 +8,7 @@ const Portfolio = require("../../models/portfolio");
 
 // HELPER FUNCTIONS
 const {
-  isLoggedIn,
+  isLoggedin,
   isNotLoggedIn,
   validationLogIn,
 } = require("../../helpers/middlewares");
@@ -43,6 +43,16 @@ router.post(
         // en caso contratio, si el usuario no existe, hace hash del password y crea un nuevo usuario en la BD
         const salt = bcrypt.genSaltSync(saltRounds);
         const hashPass = bcrypt.hashSync(password, salt);
+
+        const userPortfolio = await Portfolio.create({
+          technologies: [
+            {
+              name: "",
+              url: [],
+            },
+          ],
+        });
+
         const newUser = await User.create({
           firstname,
           lastname,
@@ -53,22 +63,16 @@ router.post(
           phone,
           linkedin,
           image,
+          portfolio: userPortfolio._id,
         });
         // luego asignamos el nuevo documento user a req.session.currentUser y luego enviamos la respuesta en json
+        newUser.portfolio = userPortfolio;
+        console.log('userPortfolio',newUser);
+
+        //Siempre despues de actualizar portfolio
         req.session.currentUser = newUser;
-        res
-          .status(200) 
-          .json(newUser);
-        const userPortfolio = await Portfolio.create({
-          technologies: [{ 
-            name: "",
-            url: []
-          }],
-        })
-        req.session.currentUser = {newUser, userPortfolio};
-        res
-          .status(200) 
-          .json(newUser);
+    
+        res.status(200).json(newUser);
       }
     } catch (error) {
       next(error);
@@ -111,7 +115,7 @@ router.post(
 // POST '/logout'
 
 // revisa si el usuario está logueado usando la función helper (chequea si la sesión existe), y luego destruimos la sesión
-router.post("/logout", isLoggedIn(), (req, res, next) => {
+router.post("/logout", isLoggedin(), (req, res, next) => {
   req.session.destroy();
   //  - setea el código de estado y envía de vuelta la respuesta
   res
@@ -123,7 +127,7 @@ router.post("/logout", isLoggedIn(), (req, res, next) => {
 // GET '/private'   --> Only for testing
 
 // revisa si el usuario está logueado usando la función helper (chequea si existe la sesión), y devuelve un mensaje
-router.get("/private", isLoggedIn(), (req, res, next) => {
+router.get("/private", isLoggedin(), (req, res, next) => {
   //  - setea el código de estado y devuelve un mensaje de respuesta json
   res
     .status(200) // OK
@@ -133,7 +137,7 @@ router.get("/private", isLoggedIn(), (req, res, next) => {
 // GET '/me'
 
 // chequea si el usuario está logueado usando la función helper (chequea si existe la sesión)
-router.get("/me", isLoggedIn(), (req, res, next) => {
+router.get("/me", isLoggedin(), (req, res, next) => {
   // si está logueado, previene que el password sea enviado y devuelve un json con los datos del usuario (disponibles en req.session.currentUser)
   req.session.currentUser.password = "*";
   res.json(req.session.currentUser);
