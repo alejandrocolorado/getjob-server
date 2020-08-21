@@ -12,7 +12,8 @@ const cors = require("cors");
 const axios = require ('axios');
 
 const auth = require("./routes/auth/auth");
-const jobRouter = require('./routes/private/job.js')
+const jobRouter = require('./routes/private/job.js');
+const apiService = require('./routes/services/apiServices');
 
 // MONGOOSE CONNECTION
 mongoose
@@ -69,6 +70,8 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // ROUTER MIDDLEWARE
 app.use("/auth", auth);
+
+app.use('/api', apiService);
 
 //app.use('/user', userRouter);
 app.use('/job', jobRouter);
