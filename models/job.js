@@ -5,6 +5,7 @@ const jobSchema = new Schema(
   {
     userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     title: { type: String },
+    apiId:{type:Number},
     company_name: { type: String },
     publication_date: { type: Date },
     url: { type: String },
