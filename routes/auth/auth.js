@@ -87,6 +87,7 @@ router.post(
   validationLogIn(),
   async (req, res, next) => {
     const { email, password } = req.body;
+    (console.log('AQUI------->', req.body))
     try {
       // revisa si el usuario existe en la BD
       const user = await User.findOne({ email });
@@ -97,8 +98,12 @@ router.post(
       // si el usuario existe, hace hash del password y lo compara con el de la BD
       // loguea al usuario asignando el document a req.session.currentUser, y devuelve un json con el user
       else if (bcrypt.compareSync(password, user.password)) {
+
+        const portfolioId = user.portfolio
       
-      
+        const userPortfolio = await Portfolio.findById(portfolioId)
+
+        user.portfolio = userPortfolio
 
         req.session.currentUser = user;
         res.status(200).json(user);

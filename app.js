@@ -13,6 +13,7 @@ const axios = require ('axios');
 
 const auth = require("./routes/auth/auth");
 const jobRouter = require('./routes/private/job.js');
+const userRouter = require('./routes/private/user.js');
 const apiService = require('./routes/services/apiServices');
 
 // MONGOOSE CONNECTION
@@ -77,6 +78,7 @@ app.use('/api', apiService);
 
 //app.use('/user', userRouter);
 app.use('/job', jobRouter);
+app.use('/user', userRouter);
 //app.use('portfolio', portfolioRouter);
 
 // ERROR HANDLING
