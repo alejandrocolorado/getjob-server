@@ -52,6 +52,7 @@ router.post("/project-detail/technology", async (req, res, next) => {
   const {
     title,
     company_name,
+    apiId,
     publication_date,
     url,
     tags,
@@ -107,6 +108,7 @@ router.post("/project-detail/technology", async (req, res, next) => {
       title,
       company_name,
       publication_date,
+      apiId,
       url,
       tags,
       technologies: [...currentTechnologies, ...missingTechnologies],
