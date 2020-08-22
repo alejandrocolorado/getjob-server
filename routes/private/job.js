@@ -11,7 +11,7 @@ const User = require("../../models/user");
 router.post("/project-detail", async (req, res, next) => {
   try {
     const userId = req.session.currentUser._id;
-
+    debugger;
     const {
       title,
       company_name,
