@@ -17,6 +17,7 @@ router.post("/project-detail", async (req, res, next) => {
       company_name,
       publication_date,
       url,
+      apiId,
       tags,
       technologies,
       category,
@@ -30,6 +31,7 @@ router.post("/project-detail", async (req, res, next) => {
       company_name,
       publication_date,
       url,
+      apiId,
       tags,
       technologies: tags.map((str) => ({ name: str, url: "" })),
       candidate_required_location,
@@ -66,6 +68,9 @@ router.post("/project-detail/technology", async (req, res, next) => {
     res.status(400).json({ message: "Github link needed" });
   }
   //Array de las tecnlogias que hay en el portfolio y añadiendo la nueva, proveniente de solicitud.
+  
+  
+  
   const updatedTechnologies = [...portfolio.technologies, technology];
 
 /*   let technologyExists = false
@@ -110,6 +115,7 @@ router.post("/project-detail/technology", async (req, res, next) => {
       publication_date,
       apiId,
       url,
+      apiId,
       tags,
       technologies: [...currentTechnologies, ...missingTechnologies],
       candidate_required_location,
