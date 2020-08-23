@@ -46,7 +46,7 @@ router.post(
 
         const userPortfolio = await Portfolio.create({
           technologies: [
-    ///
+            ///
           ],
         });
 
@@ -64,11 +64,11 @@ router.post(
         });
         // luego asignamos el nuevo documento user a req.session.currentUser y luego enviamos la respuesta en json
         newUser.portfolio = userPortfolio;
-        console.log('userPortfolio',newUser);
+        console.log("userPortfolio", newUser);
 
         //Siempre despues de actualizar portfolio
         req.session.currentUser = newUser;
-    
+
         res.status(200).json(newUser);
       }
     } catch (error) {
@@ -87,7 +87,7 @@ router.post(
   validationLogIn(),
   async (req, res, next) => {
     const { email, password } = req.body;
-    (console.log('AQUI------->', req.body))
+    console.log("AQUI------->", req.body);
     try {
       // revisa si el usuario existe en la BD
       const user = await User.findOne({ email });
@@ -98,12 +98,11 @@ router.post(
       // si el usuario existe, hace hash del password y lo compara con el de la BD
       // loguea al usuario asignando el document a req.session.currentUser, y devuelve un json con el user
       else if (bcrypt.compareSync(password, user.password)) {
+        const portfolioId = user.portfolio;
 
-        const portfolioId = user.portfolio
-      
-        const userPortfolio = await Portfolio.findById(portfolioId)
+        const userPortfolio = await Portfolio.findById(portfolioId);
 
-        user.portfolio = userPortfolio
+        user.portfolio = userPortfolio;
 
         req.session.currentUser = user;
         res.status(200).json(user);
