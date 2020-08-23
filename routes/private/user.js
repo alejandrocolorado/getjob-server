@@ -73,6 +73,7 @@ router.get(('/portfolio'), async (req, res, next) => {
 })
 
 router.delete(('/completed/:id'), async (res, req, next) => {
+    
     const completedJobId = req.params.id
     try{
         await Job.findByIdAndDelete(completedJobId)
@@ -82,9 +83,12 @@ router.delete(('/completed/:id'), async (res, req, next) => {
 })
 
 router.delete(('/pending/:id'), async (res, req, next) => {
+    console.log(req.url)
     const pendingJobId = req.params.id
+    
     try{
-        await Job.findByIdAndUpdate(pendingJobId)
+        await Job.findByIdAndDelete({_id: req.params.id})
+        res.status(200).send({message: "Success"})
     } catch (err){
         console.log(err)
     }
