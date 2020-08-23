@@ -11,13 +11,11 @@ const axios = require("axios");
   });
  */
 router.post("/test", async (req, res, next) => {
- 
   const response = await axios.get(
-    `https://remotive.io/api/remote-jobs?${req.body.query}`
+    `https://remotive.io/api/remote-jobs${req.body.query}`
   );
-  res.json(response.jobs);
+
+  res.json(response.data.jobs);
 });
-
-
 
 module.exports = router;
