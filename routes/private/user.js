@@ -6,6 +6,12 @@ const Job = require("./../../models/job");
 const User = require("../../models/user");
 const Portfolio = require("./../../models/portfolio")
 
+const {
+    isLoggedin,
+    isNotLoggedIn,
+    validationLogIn,
+  } = require("../../helpers/middlewares");
+
 router.get(('/profile'), async (req, res, next) => {
     const userId = req.session.currentUser._id
     try {
@@ -16,11 +22,12 @@ router.get(('/profile'), async (req, res, next) => {
     }
 })
 
-router.put(('/profile'), async (req, res, next) => {
-    const userId = req.session.currentUser._id
-    const {image, firstname, lastname, email, country, city, phone, linkedin} = req.body
+router.put(('/edit-profile'), async (req, res, next) => {
+    
+    const {image, firstname, lastname, email, country, city, phone, linkedin, user} = req.body
+    
     try {
-        const updatedUser = await User.findByIdAndUpdate({_id: userId}, {
+        const updatedUser = await User.findByIdAndUpdate({_id: user._id}, {
             image,
             firstname,
             lastname,
@@ -29,7 +36,7 @@ router.put(('/profile'), async (req, res, next) => {
             city,
             phone,
             linkedin
-        })
+        }, {new: true})
         res.status(200).json(updatedUser)
     } catch (err) {
         console.log(err)
