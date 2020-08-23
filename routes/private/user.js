@@ -72,7 +72,7 @@ router.get(('/portfolio'), async (req, res, next) => {
     }
 })
 
-router.delete(('/completed/:id'), async (res, req, next) => {
+router.delete(('/completed/:id'), async (req, res, next) => {
     
     const completedJobId = req.params.id
     try{
@@ -82,19 +82,19 @@ router.delete(('/completed/:id'), async (res, req, next) => {
     }
 })
 
-router.delete(('/pending/:id'), async (res, req, next) => {
-    console.log(req.url)
+router.delete(('/pending/:id'), async (req, res, next) => {
+   
     const pendingJobId = req.params.id
     
-    try{
-        await Job.findByIdAndDelete({_id: req.params.id})
-        res.status(200).send({message: "Success"})
+    try {
+        const deleteJob = await Job.findByIdAndDelete(pendingJobId)
+        res.json({message: "Success"})
     } catch (err){
         console.log(err)
     }
 })
 
-router.put(('/portfolio'), async (res, req, next) => {
+router.put(('/portfolio'), async (req, res, next) => {
     const portfolioId = req.session.currentUser.portfolio
     try{
         await Job.findByIdAndUpdate(portfolioId)
