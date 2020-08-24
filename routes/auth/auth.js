@@ -87,7 +87,7 @@ router.post(
   validationLogIn(),
   async (req, res, next) => {
     const { email, password } = req.body;
-    (console.log('AQUI------->', req.body))
+   
     try {
       // revisa si el usuario existe en la BD
       const user = await User.findOne({ email });
@@ -106,6 +106,8 @@ router.post(
         user.portfolio = userPortfolio
 
         req.session.currentUser = user;
+
+        console.log(req.session.currentUser)
         res.status(200).json(user);
         return;
       } else {

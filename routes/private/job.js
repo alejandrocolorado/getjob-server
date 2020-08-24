@@ -10,33 +10,22 @@ const User = require("../../models/user");
 //Validar si la Array
 router.post("/project-detail", async (req, res, next) => {
   try {
+    console.log(req.session.currentUser)
     const userId = req.session.currentUser._id;
-    debugger;
-    const {
-      title,
-      company_name,
-      publication_date,
-      url,
-      apiId,
-      tags,
-      technologies,
-      category,
-      candidate_required_location,
-    } = req.body;
-    console.log(tags);
+    const job = req.body
 
     const savedJob = await Job.create({
       userId,
-      title,
-      company_name,
-      publication_date,
-      url,
-      apiId,
-      tags,
+      title: job.title,
+      company_name: job.company_name,
+      publication_date: job.publication_date,
+      url: job.url,
+      apiId: job.id,
+      tags: job.tags,
       technologies: tags.map((str) => ({ name: str, url: "" })),
-      candidate_required_location,
+      candidate_required_location: job.candidate_required_location,
       isApplication: false,
-      category,
+      category: job.category,
     });
     res.json(savedJob);
     console.log(savedJob);
