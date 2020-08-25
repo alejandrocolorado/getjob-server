@@ -8,35 +8,24 @@ const User = require("../../models/user");
 
 //POST route => to save the job
 //Validar si la Array
-router.post("/project-detail", async (req, res, next) => {
+router.post("/job-detail", async (req, res, next) => {
   try {
+    console.log(req.session.currentUser)
     const userId = req.session.currentUser._id;
-    
-    const {
-      title,
-      company_name,
-      publication_date,
-      url,
-      apiId,
-      tags,
-      technologies,
-      category,
-      candidate_required_location,
-    } = req.body;
-    console.log(tags);
+    const job = req.body
 
     const savedJob = await Job.create({
       userId,
-      title,
-      company_name,
-      publication_date,
-      url,
-      apiId,
-      tags,
+      title: job.title,
+      company_name: job.company_name,
+      publication_date: job.publication_date,
+      url: job.url,
+      apiId: job.id,
+      tags: job.tags,
       technologies: tags.map((str) => ({ name: str, url: "" })),
-      candidate_required_location,
+      candidate_required_location: job.candidate_required_location,
       isApplication: false,
-      category,
+      category: job.category,
     });
     res.json(savedJob);
     console.log(savedJob);
@@ -45,7 +34,7 @@ router.post("/project-detail", async (req, res, next) => {
   }
 });
 
-router.post("/project-detail/technology", async (req, res, next) => {
+router.post("/job-detail/technology", async (req, res, next) => {
   const userId = req.session.currentUser._id;
 
   const portfolioId = req.session.currentUser.portfolio._id;
@@ -146,7 +135,7 @@ router.post("/project-detail/technology", async (req, res, next) => {
 
 //Aqui hay que implementar la misma logica de filter y map, anterior.
 
-router.post("/project-detail/:id/technology", async (req, res, next) => {
+router.post("/job-detail/:id/technology", async (req, res, next) => {
   const newLink = req.body.inputLink;
   const jobId = req.params.id;
   const portfolioId = req.session.currentUser.userPortfolio._id;
@@ -181,5 +170,15 @@ router.post("/project-detail/:id/technology", async (req, res, next) => {
     console.log(err);
   }
 });
+
+router.get('/job-detail/:id', async (req, res, next) => {
+  const jobId = req.params.id
+  try{
+    const jobDetail = await Job.findById(jobId);
+    res.status(200).json(jobDetail)
+  } catch (err){
+    console.log(err)
+  }
+})
 
 module.exports = router;
