@@ -134,46 +134,48 @@ router.post("/job-detail/technology", async (req, res, next) => {
 
 //Aqui hay que implementar la misma logica de filter y map, anterior.
 
-router.post("/job-detail/:id/technology", async (req, res, next) => {
-  const newLink = req.body.inputLink;
-  const jobId = req.params.id;
-  const portfolioId = req.session.currentUser.userPortfolio._id;
+// router.post("/job-detail/:id/technology", async (req, res, next) => {
+//   const newLink = req.body.inputLink;
+//   const jobId = req.params.id;
+//   const portfolioId = req.session.currentUser.userPortfolio._id;
 
-  if (req.body.githubUrl === "") {
-    res.status(400).send({ message: "Github link needed" });
-  }
+//   if (req.body.githubUrl === "") {
+//     res.status(400).send({ message: "Github link needed" });
+//   }
 
-  try {
-    await Job.findByIdAndUpdate(
-      { jobId },
-      {
-        technologies: {
-          ...technologies,
-          url: newLink,
-        },
-      }
-    );
-    res.status(200).send({ message: "Ok" });
+//   try {
+//     await Job.findByIdAndUpdate(
+//       { jobId },
+//       {
+//         technologies: {
+//           ...technologies,
+//           url: newLink,
+//         },
+//       }
+//     );
+//     res.status(200).send({ message: "Ok" });
 
-    await Portfolio.findByIdAndUpdate(
-      { portfolioId },
-      {
-        technologies: {
-          ...technologies,
-          url: url.push(newLink),
-        },
-      }
-    );
-    res.status(200).send({ message: "Ok" });
-  } catch (err) {
-    console.log(err);
-  }
-});
+//     await Portfolio.findByIdAndUpdate(
+//       { portfolioId },
+//       {
+//         technologies: {
+//           ...technologies,
+//           url: url.push(newLink),
+//         },
+//       }
+//     );
+//     res.status(200).send({ message: "Ok" });
+//   } catch (err) {
+//     console.log(err);
+//   }
+// });
 
-router.get('/job-detail/:id', async (req, res, next) => {
+router.get('/job-detail-saved/:id', async (req, res, next) => {
   const jobId = req.params.id
+  console.log('hola', req.params.id)
   try{
-    const jobDetail = await Job.findById(jobId);
+    const jobDetail = await Job.findById({_id: jobId});
+    console.log(jobDetail)
     res.status(200).json(jobDetail)
   } catch (err){
     console.log(err)
