@@ -10,10 +10,9 @@ const User = require("../../models/user");
 //Validar si la Array
 router.post("/job-detail", async (req, res, next) => {
   try {
-    console.log(req.session.currentUser)
-    const userId = req.session.currentUser._id;
-    const job = req.body
-
+    
+    const {job, userId} = req.body
+    
     const savedJob = await Job.create({
       userId,
       title: job.title,
@@ -22,7 +21,7 @@ router.post("/job-detail", async (req, res, next) => {
       url: job.url,
       apiId: job.id,
       tags: job.tags,
-      technologies: tags.map((str) => ({ name: str, url: "" })),
+      technologies: job.tags.map((str) => ({ name: str, url: "" })),
       candidate_required_location: job.candidate_required_location,
       isApplication: false,
       category: job.category,
