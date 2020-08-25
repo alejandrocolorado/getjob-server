@@ -33,52 +33,130 @@ router.post("/job-detail", async (req, res, next) => {
   }
 });
 
-router.post("/job-detail/technology", async (req, res, next) => {
-  const userId = req.session.currentUser._id;
+// router.post("/job-detail/technology", async (req, res, next) => {
+//   const userId = req.session.currentUser._id;
 
-  const portfolioId = req.session.currentUser.portfolio._id;
-  const portfolio = req.session.currentUser.portfolio;
-  console.log("let me see", portfolio);
-  const {
-    title,
-    company_name,
-    apiId,
-    publication_date,
-    url,
-    tags,
-    //debe ser un objeto, para enviar desde el frontend.
-    technology,
-    category,
-    candidate_required_location,
-  } = req.body;
+//   const portfolioId = req.session.currentUser.portfolio._id;
+//   const portfolio = req.session.currentUser.portfolio;
+//   console.log("let me see", portfolio);
+//   const {
+//     title,
+//     company_name,
+//     apiId,
+//     publication_date,
+//     url,
+//     tags,
+//     //debe ser un objeto, para enviar desde el frontend.
+//     technology,
+//     category,
+//     candidate_required_location,
+//   } = req.body;
 
-  if (technology.url === "") {
+//   if (technology.url === "") {
+//     res.status(400).json({ message: "Github link needed" });
+//   }
+//   //Array de las tecnlogias que hay en el portfolio y añadiendo la nueva, proveniente de solicitud.
+  
+  
+  
+//   const updatedTechnologies = [...portfolio.technologies, technology];
+
+// /*   let technologyExists = false
+
+//   portfolio.technologies.forEach(tech => {
+
+//    if (tech.name === technology.name) {
+//      tech.url.push(technology.url) 
+//      technologyExists=true;
+//    } 
+//  });
+//   if (!technologyExists) {
+//     const newTechnology= {t}
+//     portfolio.technologies.push(t)
+//   } */
+
+//   //filtras las tencologias que hay en el portfolio y que coincidan con tags
+//   const currentTechnologies = updatedTechnologies.filter((tech) => {
+//     //aqui compar alas technologies con tags.
+//     return tags.includes(tech.name);
+//   });
+
+//   // array de solo nombres de tags del portfolio y de la que añades en la pagina, que ya tengo
+//   const currentTags = currentTechnologies.map((tech) => tech.name);
+  
+
+//   //
+//   const missingTechnologies = tags.map((tag) => {
+//     //{ name: str, url: "" }
+//     if (!currentTags.includes(tag)) {
+//       return { name: tag, url: "" };
+//     }
+//   }).filter(el=>el);
+
+//   console.log({updatedTechnologies, currentTechnologies, missingTechnologies });
+
+//   try {
+//     const newJob = await Job.create({
+//       userId,
+//       title,
+//       company_name,
+//       publication_date,
+//       apiId,
+//       url,
+//       apiId,
+//       tags,
+//       technologies: [...currentTechnologies, ...missingTechnologies],
+//       candidate_required_location,
+//       isApplication: false,
+//       category,
+//     });
+
+//     const updatedPortfolio = await Portfolio.findByIdAndUpdate(
+//       portfolioId,
+//       {
+//         technologies: updatedTechnologies,
+//       },
+//       { new: true }
+//     );
+//     //Siempre despues de actualizar portfolio, tambien actualizar el user con el job.
+    
+//     const updatedUser = await User.findByIdAndUpdate(userId,  {$push: {jobs:newJob._id}})
+    
+//     updatedUser.portfolio = updatedPortfolio;
+//     req.session.currentUser = updatedUser;
+
+//     res.json(newJob);
+    
+//   } catch (err) {
+//     console.log(err);
+//   }
+// });
+
+router.post("/technology", async (req, res, next) => {
+  //const userId = user._id;
+  const {job, user, githubLink, tag} = req.body
+  const technology = {name: tag.name, url: githubLink}
+  console.log('loLogre', technology)
+
+  //const portfolioId = req.session.currentUser.portfolio._id;
+  //const portfolio = req.session.currentUser.portfolio;
+
+  if (githubLink === "") {
     res.status(400).json({ message: "Github link needed" });
   }
   //Array de las tecnlogias que hay en el portfolio y añadiendo la nueva, proveniente de solicitud.
-  
-  
-  
-  const updatedTechnologies = [...portfolio.technologies, technology];
 
-/*   let technologyExists = false
+  try {
+    const portfolio = await Portfolio.findById(user.portfolio)
+    console.log(portfolio)
 
-  portfolio.technologies.forEach(tech => {
+    const updatedTechnologies = [...portfolio.technologies, technology];
 
-   if (tech.name === technology.name) {
-     tech.url.push(technology.url) 
-     technologyExists=true;
-   } 
- });
-  if (!technologyExists) {
-    const newTechnology= {t}
-    portfolio.technologies.push(t)
-  } */
 
   //filtras las tencologias que hay en el portfolio y que coincidan con tags
   const currentTechnologies = updatedTechnologies.filter((tech) => {
     //aqui compar alas technologies con tags.
-    return tags.includes(tech.name);
+    return job.tags.includes(tech.name);
   });
 
   // array de solo nombres de tags del portfolio y de la que añades en la pagina, que ya tengo
@@ -86,7 +164,7 @@ router.post("/job-detail/technology", async (req, res, next) => {
   
 
   //
-  const missingTechnologies = tags.map((tag) => {
+  const missingTechnologies = job.tags.map((tag) => {
     //{ name: str, url: "" }
     if (!currentTags.includes(tag)) {
       return { name: tag, url: "" };
@@ -95,24 +173,13 @@ router.post("/job-detail/technology", async (req, res, next) => {
 
   console.log({updatedTechnologies, currentTechnologies, missingTechnologies });
 
-  try {
-    const newJob = await Job.create({
-      userId,
-      title,
-      company_name,
-      publication_date,
-      apiId,
-      url,
-      apiId,
-      tags,
+    const updatedJob = await Job.findByIdAndUpdate(portfolio._id, {
+      //...updatedJob,
       technologies: [...currentTechnologies, ...missingTechnologies],
-      candidate_required_location,
-      isApplication: false,
-      category,
     });
 
     const updatedPortfolio = await Portfolio.findByIdAndUpdate(
-      portfolioId,
+      portfolio._id,
       {
         technologies: updatedTechnologies,
       },
@@ -120,12 +187,12 @@ router.post("/job-detail/technology", async (req, res, next) => {
     );
     //Siempre despues de actualizar portfolio, tambien actualizar el user con el job.
     
-    const updatedUser = await User.findByIdAndUpdate(userId,  {$push: {jobs:newJob._id}})
+    const updatedUser = await User.findByIdAndUpdate(user._id, {$push: {jobs:updatedJob._id}})
     
     updatedUser.portfolio = updatedPortfolio;
     req.session.currentUser = updatedUser;
 
-    res.json(newJob);
+    res.status(200).json(updatedJob);
     
   } catch (err) {
     console.log(err);
