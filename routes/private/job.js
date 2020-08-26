@@ -10,8 +10,31 @@ const User = require("../../models/user");
 //Validar si la Array
 router.post("/job-detail", async (req, res, next) => {
   try {
+
+    const tagsArr = [
+      "frontend",
+      "CSS",
+      "react",
+      "javascript",
+      "php",
+      "node.js",
+      "python",
+      "sketch",
+      "UI/UX",
+      "html",
+      "figma",
+    ];
     
     const {job, userId} = req.body
+
+    const techObj = job.tags.map((str) => { if (tagsArr.includes(str)){
+        return ({ name: str, url: "" })
+      }
+    }).filter(el=>el)
+
+  
+
+    
     
     const savedJob = await Job.create({
       userId,
@@ -21,7 +44,7 @@ router.post("/job-detail", async (req, res, next) => {
       url: job.url,
       apiId: job.id,
       tags: job.tags,
-      technologies: job.tags.map((str) => ({ name: str, url: "" })),
+      technologies: techObj,
       candidate_required_location: job.candidate_required_location,
       isApplication: false,
       category: job.category,
@@ -153,19 +176,22 @@ router.post("/technology", async (req, res, next) => {
       return (tech.name !== technology.name)
     })
 
+    console.log('filteredPortfolioTechs:', filteredPortfolioTechs)
+
     const updatedTechnologies = [...filteredPortfolioTechs, technology];
 
-
+    console.log('updatedTechnologies:', updatedTechnologies)
   //filtras las tencologias que hay en el portfolio y que coincidan con tags
   const currentTechnologies = updatedTechnologies.filter((tech) => {
     //aqui compar alas technologies con tags.
     return job.tags.includes(tech.name);
   });
 
+  console.log('currentTechnologies:', currentTechnologies)
   // array de solo nombres de tags del portfolio y de la que añades en la pagina, que ya tengo
   const currentTags = currentTechnologies.map((tech) => tech.name);
   
-
+  console.log('currentTags:', currentTags)
   //
   const missingTechnologies = job.tags.map((tag) => {
     //{ name: str, url: "" }
@@ -174,7 +200,8 @@ router.post("/technology", async (req, res, next) => {
     }
   }).filter(el=>el);
 
-  console.log({updatedTechnologies, currentTechnologies, missingTechnologies });
+  console.log('missingTechnologies:', currentTags)
+ 
 
     const updatedJob = await Job.findByIdAndUpdate(job._id, {
       //...updatedJob,
