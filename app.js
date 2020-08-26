@@ -37,7 +37,7 @@ const app = express();
 app.use(
   cors({
     credentials: true,
-    origin: [process.env.PUBLIC_DOMAIN],
+    origin: [process.env.PUBLIC_DOMAIN, 'https:///m3getjob.herokuapp.com'],
   })
 );
 // app.use((req, res, next) => {
@@ -80,6 +80,12 @@ app.use('/api', apiService);
 app.use('/job', jobRouter);
 app.use('/user', userRouter);
 //app.use('portfolio', portfolioRouter);
+
+// ROUTE FOR SERVING REACT APP (index.html)
+app.use((req, res) => {
+  // If no routes match, send them the React HTML.
+  res.sendFile(__dirname + "/public/index.html");
+});
 
 // ERROR HANDLING
 // catch 404 and forward to error handler
