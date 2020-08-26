@@ -27,13 +27,16 @@ router.post("/job-detail", async (req, res, next) => {
       category: job.category,
     });
     res.json(savedJob);
-    console.log(savedJob);
+   
   } catch (error) {
     console.log(error);
   }
 });
 
+
+
 router.post("/job-detail/technology", async (req, res, next) => {
+console.log(req.body);
   const userId = req.session.currentUser._id;
 
   const portfolioId = req.session.currentUser.portfolio._id;
@@ -172,7 +175,7 @@ router.post("/job-detail/technology", async (req, res, next) => {
 
 router.get('/job-detail-saved/:id', async (req, res, next) => {
   const jobId = req.params.id
-  console.log('hola', req.params.id)
+  
   try{
     const jobDetail = await Job.findById({_id: jobId});
     console.log(jobDetail)
