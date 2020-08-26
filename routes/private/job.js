@@ -138,8 +138,7 @@ router.post("/technology", async (req, res, next) => {
   const technology = {name: tag.name, url: githubLink}
   console.log('loLogre', technology)
 
-  //const portfolioId = req.session.currentUser.portfolio._id;
-  //const portfolio = req.session.currentUser.portfolio;
+
 
   if (githubLink === "") {
     res.status(400).json({ message: "Github link needed" });
@@ -150,7 +149,11 @@ router.post("/technology", async (req, res, next) => {
     const portfolio = await Portfolio.findById(user.portfolio)
     console.log(portfolio)
 
-    const updatedTechnologies = [...portfolio.technologies, technology];
+    const filteredPortfolioTechs = portfolio.technologies.filter((tech) => {
+      return (tech.name !== technology.name)
+    })
+
+    const updatedTechnologies = [...filteredPortfolioTechs, technology];
 
 
   //filtras las tencologias que hay en el portfolio y que coincidan con tags
@@ -173,7 +176,7 @@ router.post("/technology", async (req, res, next) => {
 
   console.log({updatedTechnologies, currentTechnologies, missingTechnologies });
 
-    const updatedJob = await Job.findByIdAndUpdate(portfolio._id, {
+    const updatedJob = await Job.findByIdAndUpdate(job._id, {
       //...updatedJob,
       technologies: [...currentTechnologies, ...missingTechnologies],
     });
