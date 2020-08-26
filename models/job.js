@@ -10,6 +10,7 @@ const jobSchema = new Schema(
     publication_date: { type: Date },
     url: { type: String },
     tags: [{ type: String }],
+    tagsToShow:[{type: String}],
     technologies: {
       type: [
         {
