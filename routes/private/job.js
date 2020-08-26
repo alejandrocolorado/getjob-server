@@ -155,7 +155,7 @@ router.post("/job-detail", async (req, res, next) => {
 //   }
 // });
 
-router.post("/technology", async (req, res, next) => {
+router.post("/job-detail/technology", async (req, res, next) => {
   //const userId = user._id;
   const {job, user, githubLink, tag} = req.body
   const technology = {name: tag.name, url: githubLink}
