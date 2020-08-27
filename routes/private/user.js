@@ -13,6 +13,7 @@ const {
 } = require("../../helpers/middlewares");
 
 router.get("/profile", async (req, res, next) => {
+    
   const userId = req.session.currentUser._id;
   try {
     const findUser = await User.findById({ _id: userId });
