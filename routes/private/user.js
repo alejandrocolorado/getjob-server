@@ -94,10 +94,11 @@ router.delete(('/pending/:id'), async (req, res, next) => {
     }
 })
 
-router.put(('/portfolio'), async (req, res, next) => {
-    const portfolioId = req.session.currentUser.portfolio
+router.delete(('/portfolio/:id'), async (req, res, next) => {
+    console.log("AQUI--------------->", req.params)
+    
     try{
-        await Job.findByIdAndUpdate(portfolioId)
+        await Portfolio.findByIdAndUpdate()
     } catch (err) {
         console.log(err)
     }
