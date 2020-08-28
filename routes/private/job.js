@@ -53,11 +53,7 @@ router.post("/job-detail", async (req, res, next) => {
       category: job.category,
     });
     res.json(savedJob);
-<<<<<<< HEAD
     
-=======
-   
->>>>>>> 6a0e1cce521a92169ac7f52c3b3a111d6ff1451e
   } catch (error) {
     console.log(error);
   }
@@ -65,16 +61,6 @@ router.post("/job-detail", async (req, res, next) => {
 
 
 
-<<<<<<< HEAD
-=======
-//     res.json(newJob);
-    
-//   } catch (err) {
-//     console.log(err);
-//   }
-// });
-
->>>>>>> 6a0e1cce521a92169ac7f52c3b3a111d6ff1451e
 router.post("/job-detail/technology", async (req, res, next) => {
   //const userId = user._id;
   const {job, user, githubLink, tag} = req.body
