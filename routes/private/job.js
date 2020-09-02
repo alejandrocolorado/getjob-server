@@ -77,31 +77,30 @@ router.post("/job-detail/technology", async (req, res, next) => {
 
   try {
     const portfolio = await Portfolio.findById(user.portfolio._id)
-    //console.log(portfolio)
+  
 
     const filteredPortfolioTechs = portfolio.technologies.filter((tech) => {
       return (tech.name !== technology.name)
     })
 
-    console.log('filteredPortfolioTechs:', filteredPortfolioTechs)
 
     const updatedTechnologies = [...filteredPortfolioTechs, technology];
 
-    //console.log('updatedTechnologies:', updatedTechnologies)
+  
   //filtras las tencologias que hay en el portfolio y que coincidan con tags
   const currentTechnologies = updatedTechnologies.filter((tech) => {
     //aqui compar alas technologies con tags.
     return job.tagsToShow.includes(tech.name);
   });
 
-  //console.log('currentTechnologies:', currentTechnologies)
+ 
   // array de solo nombres de tags del portfolio y de la que añades en la pagina, que ya tengo
   const currentTags = currentTechnologies.map((tech) => tech.name);
   
-  //console.log('currentTags:', currentTags)
-  //
+ 
+  
   const missingTechnologies = job.tagsToShow.map((tag) => {
-    //{ name: str, url: "" }
+   
     if (!currentTags.includes(tag)) {
       return { name: tag, url: "" };
     }
