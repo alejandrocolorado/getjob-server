@@ -1,0 +1,7 @@
+MONGODB_URI=mongodb://localhost:27017/GETjob-server
+PUBLIC_DOMAIN=http://localhost:3000
+SECRET_SESSION=GETjob-user
+PORT=4000
+cloudName=dodmivmwx
+cloudKey=515663111642853
+cloudSecret=dV5-t8oNu_mcsZ9quzqXYO48F84 
