@@ -62,7 +62,7 @@ console.log(req.body);
 
         const userPortfolio = await Portfolio.create({
           technologies: [
-            ///
+            
           ],
         });
 
