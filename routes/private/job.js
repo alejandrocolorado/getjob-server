@@ -12,15 +12,15 @@ router.post("/job-detail", async (req, res, next) => {
   try {
 
     const tagsArr = [
-      "frontend",
+      "mobile",
       "CSS",
       "react",
       "javascript",
       "php",
-      "node.js",
+      "angular",
       "python",
       "sketch",
-      "UI/UX",
+      "ui",
       "html",
       "figma",
     ];
