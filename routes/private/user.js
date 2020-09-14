@@ -120,4 +120,15 @@ router.post("/portfolio", async (req, res, next) => {
   }
 });
 
+router.delete("/portfolio", async (req, res, next) => {
+  const pendingJobId = req.params.id;
+
+  try {
+    const deleteJob = await Job.findByIdAndDelete(pendingJobId);
+    res.json({ message: "Success" });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
 module.exports = router;

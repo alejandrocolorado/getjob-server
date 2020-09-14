@@ -140,7 +140,7 @@ router.get('/job-detail-saved/:id', async (req, res, next) => {
   
   try{
     const jobDetail = await Job.findById({_id: jobId});
-    console.log(jobDetail)
+  
     res.status(200).json(jobDetail)
   } catch (err){
     console.log(err)
@@ -149,12 +149,12 @@ router.get('/job-detail-saved/:id', async (req, res, next) => {
 
 router.post('/job-detail-saved/:id', async (req, res, next) => {
   const jobId = req.params.id
-  console.log('hola', jobId)
+ 
   try{
     const updatedJob = await Job.findByIdAndUpdate(jobId, {
       isApplication: true
     });
-    console.log("aqui", updatedJob)
+   
     res.status(200).json(updatedJob)
   } catch (err){
     console.log(err)
